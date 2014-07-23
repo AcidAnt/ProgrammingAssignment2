@@ -1,15 +1,54 @@
-## Put comments here that give an overall description of what your
-## functions do
+## As matrix inversion is a very costly operation, these functions
+## help caching a matrix's inverse by taking advantage of of R 
+## scoping capabilities.
 
-## Write a short comment describing this function
 
+## Returns functions for getting and setting a matrix 'x' and its 
+## inverse.
 makeCacheMatrix <- function(x = matrix()) {
-
+  
+  # check if input is an invertible (quadratic) matrix
+  if (!is.matrix(x) ||  ncol(x) != nrow(x))
+    stop("Input is not an invertible matrix ...")
+  
+  inv <<- NULL
+  
+  # functions for setting and getting the matrix, 
+  # inverted matrix is initially NULL
+  set <- function(y) {
+    x <<- y
+    inv <<- NULL
+  }
+  get <- function() x
+  
+  
+  # functions for setting and getting the inverted matrix
+  setinv <- function(solve) inv <<- solve
+  getinv <- function() inv
+  
+  list(
+    set = set, get = get,
+    setinv = setinv, getinv = getinv
+  )
 }
 
 
-## Write a short comment describing this function
-
+## Returns a matrix that is the inverse of a cacheMatrix 'x'.
+## If the inverse is already cached, the cache value is returned
+## otherwise the value is calculated and gets cached.
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  
+  # check if inverse is cached and return it
+  inv <- x$getinv()
+  if(!is.null(inv)) {
+    message("Getting cached matrix ...")
+    return(inv)
+  }
+  
+  # inverse is not cached: calculate and cache it
+  data <- x$get()
+  inv <- solve(data)
+  x$setinv(inv)
+  
+  inv
 }
