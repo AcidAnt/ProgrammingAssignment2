@@ -7,10 +7,6 @@
 ## inverse.
 makeCacheMatrix <- function(x = matrix()) {
   
-  # check if input is an invertible (quadratic) matrix
-  if (!is.matrix(x) ||  ncol(x) != nrow(x))
-    stop("Input is not an invertible matrix ...")
-  
   inv <<- NULL
   
   # functions for setting and getting the matrix, 
